@@ -4,7 +4,7 @@ import JWTDecode
 import Foundation
 
 class JWTDecodeSpec: QuickSpec {
-    override class func spec() {
+    override func spec() {
         describe("decode") {
             it("should tell a jwt is expired") {
                 expect(expiredJWT().expired).to(beTruthy())
@@ -25,8 +25,7 @@ class JWTDecodeSpec: QuickSpec {
             }
 
             it("should return original jwt string representation") {
-                let jwtString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjb20uc29td2hlcmUuZmFyLmJleW9uZDphcGki"
-                    + "LCJpc3MiOiJhdXRoMCIsInVzZXJfcm9sZSI6ImFkbWluIn0.sS84motSLj9HNTgrCPcAjgZIQ99jXNN7_W9fEIIfxz0"
+                let jwtString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjb20uc29td2hlcmUuZmFyLmJleW9uZDphcGkiLCJpc3MiOiJhdXRoMCIsInVzZXJfcm9sZSI6ImFkbWluIn0.sS84motSLj9HNTgrCPcAjgZIQ99jXNN7_W9fEIIfxz0"
                 let jwt = try! decode(jwt: jwtString)
                 expect(jwt.string).to(equal(jwtString))
             }
@@ -36,8 +35,7 @@ class JWTDecodeSpec: QuickSpec {
             }
 
             it("should decode valid jwt") {
-                let jwtString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjb20uc29td2hlcmUuZmFyLmJleW9uZDphcGki"
-                    + "LCJpc3MiOiJhdXRoMCIsInVzZXJfcm9sZSI6ImFkbWluIn0.sS84motSLj9HNTgrCPcAjgZIQ99jXNN7_W9fEIIfxz0"
+                let jwtString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjb20uc29td2hlcmUuZmFyLmJleW9uZDphcGkiLCJpc3MiOiJhdXRoMCIsInVzZXJfcm9sZSI6ImFkbWluIn0.sS84motSLj9HNTgrCPcAjgZIQ99jXNN7_W9fEIIfxz0"
                 expect(try! decode(jwt: jwtString)).toNot(beNil())
             }
 
@@ -73,9 +71,7 @@ class JWTDecodeSpec: QuickSpec {
         }
 
         describe("jwt parts") {
-            let jwtString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdWIifQ.xXcD7WOvUDHJ94E6aVHYgXdsJHLl2oW7Z"
-                + "Xm4QpVvXnY"
-            let sut = try! decode(jwt: jwtString)
+            let sut = try! decode(jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdWIifQ.xXcD7WOvUDHJ94E6aVHYgXdsJHLl2oW7ZXm4QpVvXnY")
 
             it("should return header") {
                 expect(sut.header as? [String: String]).to(equal(["alg": "HS256", "typ": "JWT"]))
@@ -114,14 +110,10 @@ class JWTDecodeSpec: QuickSpec {
             }
 
             describe("registered claims") {
-                let jwtString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2V4YW1wbGUudXMuYXV0aDAuY29t"
-                    + "Iiwic3ViIjoiYXV0aDB8MTAxMDEwMTAxMCIsImF1ZCI6Imh0dHBzOi8vZXhhbXBsZS51cy5hdXRoMC5jb20iLCJleHAiOjE"
-                    + "zNzI2NzQzMzYsImlhdCI6MTM3MjYzODMzNiwianRpIjoicXdlcnR5MTIzNDU2IiwibmJmIjoxMzcyNjM4MzM2fQ.PmTa620"
-                    + "SkKEawqtY8sFsxesdnN8C9ffFTmstfjPPR84"
-                let sut = try! decode(jwt: jwtString)
+                let sut = try! decode(jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NhbXBsZXMuYXV0aDAuY29tIiwic3ViIjoiYXV0aDB8MTAxMDEwMTAxMCIsImF1ZCI6Imh0dHBzOi8vc2FtcGxlcy5hdXRoMC5jb20iLCJleHAiOjEzNzI2NzQzMzYsImlhdCI6MTM3MjYzODMzNiwianRpIjoicXdlcnR5MTIzNDU2IiwibmJmIjoxMzcyNjM4MzM2fQ.LvF9wSheCB5xarpydmurWgi9NOZkdES5AbNb_UWk9Ew")
 
                 it("should return issuer") {
-                    expect(sut.issuer).to(equal("https://example.us.auth0.com"))
+                    expect(sut.issuer).to(equal("https://samples.auth0.com"))
                 }
 
                 it("should return subject") {
@@ -129,17 +121,14 @@ class JWTDecodeSpec: QuickSpec {
                 }
 
                 it("should return single audience") {
-                    expect(sut.audience).to(equal(["https://example.us.auth0.com"]))
+                    expect(sut.audience).to(equal(["https://samples.auth0.com"]))
                 }
 
                 context("multiple audiences") {
-                    let jwtString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiaHR0cHM6Ly9leGFtcGxlLnVzLmF1dGgw"
-                        + "LmNvbSIsImh0dHBzOi8vYXBpLmV4YW1wbGUudXMuYXV0aDAuY29tIl19.sw24la9mmCmykudpyE-U1Ar5bbyuDMyKaW"
-                        + "ksSkBXhrM"
-                    let sut = try! decode(jwt: jwtString)
+                    let sut = try! decode(jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiaHR0cHM6Ly9zYW1wbGVzLmF1dGgwLmNvbSIsImh0dHBzOi8vYXBpLnNhbXBsZXMuYXV0aDAuY29tIl19.cfWFPuJbQ7NToa-BjHgHD1tHn3P2tOP5wTQaZc1qg6M")
 
                     it("should return all audiences") {
-                        expect(sut.audience).to(equal(["https://example.us.auth0.com", "https://api.example.us.auth0.com"]))
+                        expect(sut.audience).to(equal(["https://samples.auth0.com", "https://api.samples.auth0.com"]))
                     }
                 }
 
@@ -301,12 +290,7 @@ class JWTDecodeSpec: QuickSpec {
                     var sut: JWT!
 
                     beforeEach {
-                        let jwtString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NhbXBsZXMuYXV0aDAu"
-                            + "Y29tIiwic3ViIjoiYXV0aDB8MTAxMDEwMTAxMCIsImF1ZCI6Imh0dHBzOi8vc2FtcGxlcy5hdXRoMC5jb20iLCJ"
-                            + "leHAiOjEzNzI2NzQzMzYsImlhdCI6MTM3MjYzODMzNiwianRpIjoicXdlcnR5MTIzNDU2IiwibmJmIjoxMzcyNj"
-                            + "M4MzM2LCJlbWFpbCI6InVzZXJAaG9zdC5jb20iLCJjdXN0b20iOlsxLDIsM119.JeMRyHLkcoiqGxd958B6PABK"
-                            + "NvhOhIgw-kbjecmhR_E"
-                        sut = try! decode(jwt: jwtString)
+                        sut = try! decode(jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NhbXBsZXMuYXV0aDAuY29tIiwic3ViIjoiYXV0aDB8MTAxMDEwMTAxMCIsImF1ZCI6Imh0dHBzOi8vc2FtcGxlcy5hdXRoMC5jb20iLCJleHAiOjEzNzI2NzQzMzYsImlhdCI6MTM3MjYzODMzNiwianRpIjoicXdlcnR5MTIzNDU2IiwibmJmIjoxMzcyNjM4MzM2LCJlbWFpbCI6InVzZXJAaG9zdC5jb20iLCJjdXN0b20iOlsxLDIsM119.JeMRyHLkcoiqGxd958B6PABKNvhOhIgw-kbjecmhR_E")
                     }
 
                     it("should return email") {
